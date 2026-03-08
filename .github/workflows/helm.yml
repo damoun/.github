@@ -17,7 +17,7 @@ jobs:
     name: Lint & Validate
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: azure/setup-helm@v4
@@ -37,7 +37,7 @@ jobs:
     permissions:
       security-events: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: azure/setup-helm@v4
         with:
           version: ${{ inputs.helm_version }}
@@ -47,13 +47,13 @@ jobs:
           for chart in ${{ inputs.charts_dir }}/*/; do
             helm package "$chart" -d /tmp/charts
           done
-      - uses: aquasecurity/trivy-action@master
+      - uses: aquasecurity/trivy-action@0.35.0
         with:
           scan-type: fs
           scan-ref: /tmp/charts
           format: sarif
           output: trivy.sarif
-      - uses: github/codeql-action/upload-sarif@v3
+      - uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy.sarif
           category: trivy-helm
