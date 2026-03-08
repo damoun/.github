@@ -1,0 +1,59 @@
+name: Helm
+
+on:
+  workflow_call:
+    inputs:
+      charts_dir:
+        description: Path to the charts directory
+        type: string
+        default: charts
+      helm_version:
+        description: Helm version to use
+        type: string
+        default: v3.17.0
+
+jobs:
+  lint:
+    name: Lint & Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: azure/setup-helm@v4
+        with:
+          version: ${{ inputs.helm_version }}
+      - name: Helm lint
+        run: helm lint ${{ inputs.charts_dir }}/*
+      - name: Helm template (validate)
+        run: |
+          for chart in ${{ inputs.charts_dir }}/*/; do
+            helm template release "$chart" > /dev/null
+          done
+
+  trivy:
+    name: Trivy scan
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+        with:
+          version: ${{ inputs.helm_version }}
+      - name: Package charts
+        run: |
+          mkdir -p /tmp/charts
+          for chart in ${{ inputs.charts_dir }}/*/; do
+            helm package "$chart" -d /tmp/charts
+          done
+      - uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: /tmp/charts
+          format: sarif
+          output: trivy.sarif
+      - uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy.sarif
+          category: trivy-helm
