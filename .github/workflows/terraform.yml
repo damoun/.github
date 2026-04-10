@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: hashicorp/setup-terraform@v4
+      - uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4
         with:
           terraform_version: ${{ inputs.terraform-version }}
       - name: terraform fmt
@@ -46,7 +46,7 @@ jobs:
       security-events: write
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: aquasecurity/tfsec-sarif-action@v0.1.4
+      - uses: aquasecurity/tfsec-sarif-action@21ded20e8ca120cd9d3d6ab04ef746477542a608 # v0.1.4
         with:
           sarif_file: tfsec.sarif
           working_directory: ${{ inputs.working-directory }}
