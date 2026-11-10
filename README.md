@@ -26,7 +26,7 @@ jobs:
 
 ### `helm.yml` — Lint + Validate + Trivy
 
-Lints and validates Helm charts, then scans packaged charts with Trivy.
+Lints and validates Helm charts, then scans packaged charts with Trivy (vulnerabilities, secrets and misconfigurations).
 
 **Inputs**
 
