@@ -47,6 +47,36 @@ jobs:
 
 ---
 
+### `image.yml` — Trivy
+
+Scans a published container image with Trivy and uploads the results to code scanning. Run it on a schedule: new CVEs show up against images that have not changed. One image per repo, since every upload uses the `trivy-image` category.
+
+**Inputs**
+
+| Input | Description | Default |
+|-------|-------------|---------|
+| `image` | Image reference to scan | required |
+
+**Caller example**
+
+```yaml
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  image:
+    uses: damoun/.github/.github/workflows/image.yml@main
+    permissions:
+      contents: read
+      security-events: write
+    with:
+      image: ghcr.io/damoun/my-image:latest
+```
+
+---
+
 ### `terraform.yml` — Docs + Fmt + tfsec
 
 Three jobs: auto-generates terraform-docs, checks formatting, and runs tfsec SARIF scan.
