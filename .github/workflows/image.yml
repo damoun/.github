@@ -1,0 +1,31 @@
+name: Image
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        description: Container image reference to scan
+        type: string
+        required: true
+
+jobs:
+  trivy:
+    name: Trivy image scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: step-security/harden-runner@46b06cea07f9e64621fdf066ba77ac6915163d43 # v2.22.3
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
+        with:
+          image-ref: ${{ inputs.image }}
+          format: sarif
+          output: trivy-image.sarif
+      - uses: github/codeql-action/upload-sarif@1fc58d04a4d4374f921bdac573c3811c240f9c26 # v4.39.2
+        with:
+          sarif_file: trivy-image.sarif
+          category: trivy-image
