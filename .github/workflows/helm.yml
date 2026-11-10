@@ -17,10 +17,10 @@ jobs:
     name: Lint & Validate
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           fetch-depth: 0
-      - uses: azure/setup-helm@v4
+      - uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5.0.0
         with:
           version: ${{ inputs.helm_version }}
       - name: Helm lint
@@ -37,8 +37,8 @@ jobs:
     permissions:
       security-events: write
     steps:
-      - uses: actions/checkout@v6
-      - uses: azure/setup-helm@v4
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5.0.0
         with:
           version: ${{ inputs.helm_version }}
       - name: Package charts
@@ -47,7 +47,7 @@ jobs:
           for chart in ${{ inputs.charts_dir }}/*/; do
             helm package "$chart" -d /tmp/charts
           done
-      - uses: aquasecurity/trivy-action@0.35.0
+      - uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # 0.35.0
         with:
           scan-type: fs
           scan-ref: /tmp/charts
